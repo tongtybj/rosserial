@@ -83,6 +83,8 @@ public:
         = boost::bind(&Session::handle_log, this, _1);
     callbacks_[rosserial_msgs::TopicInfo::ID_TIME]
         = boost::bind(&Session::handle_time, this, _1);
+
+    signal(SIGINT, &Session::signal_catch);
   }
 
   virtual ~Session()
@@ -110,11 +112,23 @@ public:
     PROTOCOL_MAX
   };
 
+  static bool terminate_start_flag_;
+
 private:
   //// RECEIVING MESSAGES ////
   // TODO: Total message timeout, implement primarily in ReadBuffer.
 
   void read_sync_header() {
+    // Stop the tx from MCU, not sure whether the process should be here
+    if(terminate_start_flag_ )
+      {
+        std::vector<uint8_t> message(0);
+        write_message(message, rosserial_msgs::TopicInfo::ID_TX_STOP, client_version);
+        ROS_WARN("stop rosserial communication \n");
+        ros::shutdown();
+        return;
+      }
+
     async_read_buffer_.read(1, boost::bind(&Session::read_sync_first, this, _1));
   }
 
@@ -375,6 +389,11 @@ private:
     return (val >> 8) + val;
   }
 
+  static void signal_catch(int sig)
+  {
+    terminate_start_flag_ = true;
+  }
+
   //// RECEIVED MESSAGE HANDLERS ////
 
   void setup_publisher(ros::serialization::IStream& stream) {
@@ -492,6 +511,8 @@ private:
   std::map<uint16_t, SubscriberPtr> subscribers_;
   std::map<std::string, ServiceClientPtr> services_;
 };
+
+template<typename Socket>  bool Session<Socket>::terminate_start_flag_ = false;
 
 }  // namespace
 
