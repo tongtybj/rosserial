@@ -142,18 +142,9 @@ namespace ros {
       return &hardware_;
     }
 
-    /* Start serial, initialize buffers */
-    void initNode(){
-      hardware_.init();
-      mode_ = 0;
-      bytes_ = 0;
-      index_ = 0;
-      topic_ = 0;
-    };
-
-    /* Start a named port, which may be network server IP, initialize buffers */
-    void initNode(char *portName){
-      hardware_.init(portName);
+    /* Start a named seiral port */
+    void initNode(typename Hardware::serial_class* port){
+      hardware_.init(port);
       mode_ = 0;
       bytes_ = 0;
       index_ = 0;

@@ -41,9 +41,6 @@
 #include "stm32f7xx_hal.h"
 #include "stm32f7xx_hal_uart.h"
 #include "stm32f7xx_hal_dma.h"
-#include "usart.h"
-
-#define SERIAL_CLASS UART_HandleTypeDef
 
 template <typename T,  int SIZE>
 class RingBuffer
@@ -203,8 +200,6 @@ public:
         for(int j = 0; j < BUFFER_LENGTH; j++)
           tx_buffer_unit_[i].tx_data_[j]  = 1;
       }
-
-
 
     //TX
     HAL_UART_Transmit_DMA(huart_, (uint8_t*)tx_buffer_unit_[0].tx_data_, tx_buffer_unit_[0].tx_len_);
@@ -399,12 +394,14 @@ RingBuffer<uint8_t, RX_SIZE>*  RxBuffer<Hardware, RX_SIZE>::ring_buf_;
 
 class STMF7Hardware {
 public:
+  typedef UART_HandleTypeDef serial_class;
+
 
   STMF7Hardware(){ // hard coding
     baud_ = 921600;
   }
 
-  STMF7Hardware(SERIAL_CLASS* io, uint32_t baud= 115200){
+  STMF7Hardware(serial_class* io, uint32_t baud= 115200){
     iostream_ = new UartDriver<UART_HandleTypeDef>(io);	
     baud_ = baud;
   }
@@ -416,10 +413,13 @@ public:
 
   int getBaud(){return baud_;}
 
+  void init(serial_class* huart){
+    iostream_ = new UartDriver<serial_class>(huart);
+    iostream_->begin(baud_);
+  }
 
   void init(){
-    if(iostream_ == NULL) iostream_ = new UartDriver<UART_HandleTypeDef>(&huart1);
-    iostream_->begin(baud_);
+    iostream_ = NULL;
   }
 
   int read()
@@ -434,8 +434,8 @@ public:
   uint32_t time(){return HAL_GetTick();}
 
 protected:
-  SERIAL_CLASS*  io_;
-  UartDriver<UART_HandleTypeDef>* iostream_;
+  serial_class*  io_;
+  UartDriver<serial_class>* iostream_;
   uint32_t baud_;
 };
 
