@@ -68,6 +68,8 @@
 
 #define MSG_TIMEOUT 20  //20 milliseconds to recieve all of message data
 
+#define DMA_TX_BURST_SIZE 1 //ux burst size for dma 
+
 #include "msg.h"
 
 namespace ros {
@@ -217,20 +219,20 @@ namespace ros {
               if (configured_ == false)
                 requestSyncTime(); 	/* send a msg back showing our protocol version */
             }
-	  }else if( mode_ == MODE_SIZE_L ){   /* bottom half of message size */
+          }else if( mode_ == MODE_SIZE_L ){   /* bottom half of message size */
             bytes_ = data;
             index_ = 0;
             mode_++;
             checksum_ = data;               /* first byte for calculating size checksum */
           }else if( mode_ == MODE_SIZE_H ){   /* top half of message size */
             bytes_ += data<<8;
-	    mode_++;
+            mode_++;
           }else if( mode_ == MODE_SIZE_CHECKSUM ){
             if( (checksum_%256) == 255)
-	      mode_++;
-	    else
-	      mode_ = MODE_FIRST_FF;          /* Abandon the frame if the msg len is wrong */
-	  }else if( mode_ == MODE_TOPIC_L ){  /* bottom half of topic id */
+              mode_++;
+            else
+              mode_ = MODE_FIRST_FF;          /* Abandon the frame if the msg len is wrong */
+          }else if( mode_ == MODE_TOPIC_L ){  /* bottom half of topic id */
             topic_ = data;
             mode_++;
             checksum_ = data;               /* first byte included in checksum */
@@ -265,11 +267,8 @@ namespace ros {
 
       /* occasionally sync time */
       if( configured_ && ((c_time-last_sync_time) > (SYNC_SECONDS*500) )){
-        requestSyncTime(); 
+        requestSyncTime();
         last_sync_time = c_time;
-
-        //debug
-        last_sync_receive_time = c_time;
       }
 
       return 0;
@@ -448,6 +447,13 @@ namespace ros {
         chk += message_out[i];
       l += 7;
       message_out[l++] = 255 - (chk%256);
+
+      /* DMA Burst Mode */
+      if(DMA_TX_BURST_SIZE > 1)
+        {
+          uint8_t reminder = l % DMA_TX_BURST_SIZE;
+          if(reminder != 0) l = (l / DMA_TX_BURST_SIZE + 1) * DMA_TX_BURST_SIZE;
+        }
 
       if( l <= OUTPUT_SIZE ){
         hardware_.write(message_out, l);

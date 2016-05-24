@@ -49,6 +49,8 @@
 #include "rosserial_server/async_read_buffer.h"
 #include "rosserial_server/topic_handlers.h"
 
+#define BURST_MODE 1
+
 namespace rosserial_server
 {
 
@@ -135,6 +137,7 @@ private:
   void read_sync_first(ros::serialization::IStream& stream) {
     uint8_t sync;
     stream >> sync;
+    //ROS_INFO("0: %x", sync);
     if (sync == 0xff) {
       async_read_buffer_.read(1, boost::bind(&Session::read_sync_second, this, _1));
     } else {
@@ -145,6 +148,7 @@ private:
   void read_sync_second(ros::serialization::IStream& stream) {
     uint8_t sync;
     stream >> sync;
+    //ROS_INFO("1: %x", sync);
     if (client_version == PROTOCOL_UNKNOWN) {
       if (sync == 0xff) {
         ROS_WARN("Attached client is using protocol VER1 (groovy)");
@@ -169,6 +173,9 @@ private:
     if (client_version == PROTOCOL_VER2) {
       // Complex header with checksum byte for length field.
       stream >> length >> length_checksum;
+      // ROS_INFO("2: %x", length &255);
+      // ROS_INFO("3: %x", length >>8);
+      // ROS_INFO("4: %x", length_checksum);
       if (length_checksum + checksum(length) != 0xff) {
         uint8_t csl = checksum(length);
         ROS_WARN("Bad message header length checksum. Dropping message from client. T%d L%d C%d %d", topic_id, length, length_checksum, csl);
@@ -176,6 +183,8 @@ private:
         return;
       } else {
         stream >> topic_id;
+        // ROS_INFO("5: %x", topic_id & 255);
+        // ROS_INFO("6: %x", topic_id >> 8);
       }
     } else if (client_version == PROTOCOL_VER1) {
       // Simple header in VER1 protocol.
@@ -192,6 +201,10 @@ private:
     ROS_DEBUG("Received body of length %d for message on topic %d.", stream.getLength(), topic_id);
 
     ros::serialization::IStream checksum_stream(stream.getData(), stream.getLength());
+    // for(int i = 0; i < stream.getLength(); i ++)
+    //   {
+    //     ROS_INFO("%d: %x", i + 7, stream.getData()[i]);
+    //   }
 
     uint8_t msg_checksum = checksum(checksum_stream) + checksum(topic_id);
     if (client_version == PROTOCOL_VER1) {
@@ -251,12 +264,23 @@ private:
     }
 
     uint16_t length = overhead_bytes + message.size();
+
+#if BURST_MODE
+    //ROS_WARN("burst_mode, before extension: %d", length);
+    uint16_t extended_length = length;
+    uint8_t reminder = length % 8;
+    if(reminder != 0) extended_length = (length / 8 + 1) * 8;
+    //ROS_WARN("burst_mode, after extension: %d", extended_length);
+    BufferPtr buffer_ptr(new Buffer(extended_length));
+    ros::serialization::OStream stream(&buffer_ptr->at(0), length);
+#else
     BufferPtr buffer_ptr(new Buffer(length));
+    ros::serialization::OStream stream(&buffer_ptr->at(0), buffer_ptr->size());
+#endif
 
     uint8_t msg_checksum;
     ros::serialization::IStream checksum_stream(message.size() > 0 ? &message[0] : NULL, message.size());
 
-    ros::serialization::OStream stream(&buffer_ptr->at(0), buffer_ptr->size());
     if (version == PROTOCOL_VER2) {
       uint8_t msg_len_checksum = 255 - checksum(message.size());
       stream << (uint16_t)0xfeff << (uint16_t)message.size() << msg_len_checksum << topic_id;
@@ -405,6 +429,8 @@ private:
     callbacks_[topic_info.topic_id] = boost::bind(&Publisher::handle, pub, _1);
 
     set_sync_timeout(timeout_interval_);
+
+    ROS_INFO("publisher name: %s, type: %s", topic_info.topic_name.c_str(), topic_info.message_type.c_str());
   }
 
   void setup_subscriber(ros::serialization::IStream& stream) {
@@ -416,6 +442,9 @@ private:
     subscribers_[topic_info.topic_id] = sub;
 
     set_sync_timeout(timeout_interval_);
+
+    ROS_INFO("subscirber name: %s, type: %s", topic_info.topic_name.c_str(), topic_info.message_type.c_str());
+
   }
 
   // When the rosserial client creates a ServiceClient object (and/or when it registers that object with the NodeHandle)
