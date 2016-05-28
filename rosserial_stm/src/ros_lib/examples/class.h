@@ -16,45 +16,43 @@
 
 class RosClass{
 public:
- RosClass(ros::NodeHandle* nh)
-{
-nh_ = nh;
+  RosClass(ros::NodeHandle* nh):
+    nh_(nh),  pub_("test1_from_ros_class", &test_msg_), 
+    sub_("toggle_led_from_ros_class", &RosClass::testCallback, this )
+  {
+    nh_->advertise(pub_); 
+    nh_->subscribe<std_msgs::Empty, RosClass>(sub_);
+  }
+  ~RosClass(){}
 
-pub_ = new ros::Publisher("test1_from_ros_class", &test_msg_);
-nh_->advertise(*pub_); 
-
-sub_  = new ros::Subscriber2<std_msgs::Empty, RosClass> ("toggle_led_from_ros_class", &RosClass::testCallback, this );
- nh_->subscribe<std_msgs::Empty, RosClass>(*sub_);
-}
-~RosClass(){}
-
-void update()
-{
-test_msg_.data = 136;
-pub_->publish(&test_msg_);
-}
+  void update()
+  {
+    test_msg_.data = 136;
+    pub_.publish(&test_msg_);
+  }
 
 private:
 
-void testCallback(const std_msgs::Empty& toggle_msg)
-{
- static int i = 0;
-  if(i == 0) 
-    {
-      LED1_L;
-      i = 1;
-    }
-  else
-    {
-      LED1_H;
-      i = 0;
-    }
-}
+  void testCallback(const std_msgs::Empty& toggle_msg)
+  {
+    static int i = 0;
+    if(i == 0) 
+      {
+        LED1_L;
+        i = 1;
+      }
+    else
+      {
+        LED1_H;
+        i = 0;
+      }
+  }
 
-ros::NodeHandle*  nh_;
-ros::Subscriber2<std_msgs::Empty, RosClass>* sub_;
-ros::Publisher* pub_;
-std_msgs::UInt8 test_msg_;
+  ros::NodeHandle*  nh_;
+  std_msgs::UInt8 test_msg_;
+  ros::Publisher pub_;
+  ros::Subscriber2<std_msgs::Empty, RosClass> sub_;
+
 };
 #endif
 
