@@ -84,7 +84,6 @@ public:
       {
         byte_to_add_ = 0;
       }
-
     return true;
   }
 
@@ -141,8 +140,10 @@ public:
 
   bool available() { return ring_buf_->length(); }
 
-  inline uint8_t& rxValue() { return rx_value_; }
+  inline uint8_t* getRxValueP() { return rx_value_; }
   inline RingBuffer<uint8_t, RX_SIZE>* ringBuffer() { return ring_buf_; }
+
+  inline uint8_t getBurstSize() {return RX_BURST_SIZE;}
 
   static void ReceiveCplt(DMA_HandleTypeDef *hdma)
   {
@@ -331,7 +332,7 @@ private:
   Hardware *huart_;
 };
 
-#define RX_BURST_MODE 8
+#define RX_BURST_MODE 16
 
 template<class Hardware,
          int MAX_TX_BUFFER=50,
@@ -378,6 +379,11 @@ public:
   TxBuffer<Hardware, MAX_TX_BUFFER, MAX_TX_BUFFER_LENGTH>* getTx() 
  {
 	return tx_;
+ }
+
+RxBuffer<Hardware, MAX_RX_BUFFER, RX_BURST_SIZE>* getRx() 
+ {
+	return rx_;
  }
 
 private:
