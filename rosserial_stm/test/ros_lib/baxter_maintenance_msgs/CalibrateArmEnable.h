@@ -68,7 +68,7 @@ namespace baxter_maintenance_msgs
     }
 
     const char * getType(){ return "baxter_maintenance_msgs/CalibrateArmEnable"; };
-    const char * getMD5(){ return "d7ff300fd410d4ac849664ab8143da39"; };
+    const char * getMD5(){ return "e29cddd6c5825de42ce8309f5f9cb399"; };
 
   };
 

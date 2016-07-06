@@ -36,7 +36,7 @@ static const char SNAPFOOTSTEP[] = "jsk_pcl_ros/SnapFootstep";
     }
 
     const char * getType(){ return SNAPFOOTSTEP; };
-    const char * getMD5(){ return "b2fab553060b184c09aa1c8697183b82"; };
+    const char * getMD5(){ return "dc2018060e7c3bfcb9de24e7c9deb38e"; };
 
   };
 
@@ -65,7 +65,7 @@ static const char SNAPFOOTSTEP[] = "jsk_pcl_ros/SnapFootstep";
     }
 
     const char * getType(){ return SNAPFOOTSTEP; };
-    const char * getMD5(){ return "5f90736567f86e33a9f02223a346bee2"; };
+    const char * getMD5(){ return "1c7ba73355dc7d7b5f68ebb3f619151c"; };
 
   };
 

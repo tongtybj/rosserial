@@ -12,13 +12,13 @@ namespace aerial_robot_msgs
   class ControlTerm : public ros::Msg
   {
     public:
-      int32_t roll_p_term[4];
-      int32_t roll_i_term[4];
-      int32_t roll_d_term[4];
-      int32_t pitch_p_term[4];
-      int32_t pitch_i_term[4];
-      int32_t pitch_d_term[4];
-      int32_t yaw_d_term[4];
+      float roll_p_term[6];
+      float roll_i_term[6];
+      float roll_d_term[6];
+      float pitch_p_term[6];
+      float pitch_i_term[6];
+      float pitch_d_term[6];
+      float yaw_d_term[6];
 
     ControlTerm():
       roll_p_term(),
@@ -34,9 +34,9 @@ namespace aerial_robot_msgs
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_roll_p_termi;
       u_roll_p_termi.real = this->roll_p_term[i];
@@ -46,9 +46,9 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_roll_p_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll_p_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_roll_i_termi;
       u_roll_i_termi.real = this->roll_i_term[i];
@@ -58,9 +58,9 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_roll_i_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll_i_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_roll_d_termi;
       u_roll_d_termi.real = this->roll_d_term[i];
@@ -70,9 +70,9 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_roll_d_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll_d_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_pitch_p_termi;
       u_pitch_p_termi.real = this->pitch_p_term[i];
@@ -82,9 +82,9 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_pitch_p_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch_p_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_pitch_i_termi;
       u_pitch_i_termi.real = this->pitch_i_term[i];
@@ -94,9 +94,9 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_pitch_i_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch_i_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_pitch_d_termi;
       u_pitch_d_termi.real = this->pitch_d_term[i];
@@ -106,9 +106,9 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_pitch_d_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch_d_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_yaw_d_termi;
       u_yaw_d_termi.real = this->yaw_d_term[i];
@@ -124,9 +124,9 @@ namespace aerial_robot_msgs
     virtual int deserialize(unsigned char *inbuffer)
     {
       int offset = 0;
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_roll_p_termi;
       u_roll_p_termi.base = 0;
@@ -137,9 +137,9 @@ namespace aerial_robot_msgs
       this->roll_p_term[i] = u_roll_p_termi.real;
       offset += sizeof(this->roll_p_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_roll_i_termi;
       u_roll_i_termi.base = 0;
@@ -150,9 +150,9 @@ namespace aerial_robot_msgs
       this->roll_i_term[i] = u_roll_i_termi.real;
       offset += sizeof(this->roll_i_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_roll_d_termi;
       u_roll_d_termi.base = 0;
@@ -163,9 +163,9 @@ namespace aerial_robot_msgs
       this->roll_d_term[i] = u_roll_d_termi.real;
       offset += sizeof(this->roll_d_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_pitch_p_termi;
       u_pitch_p_termi.base = 0;
@@ -176,9 +176,9 @@ namespace aerial_robot_msgs
       this->pitch_p_term[i] = u_pitch_p_termi.real;
       offset += sizeof(this->pitch_p_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_pitch_i_termi;
       u_pitch_i_termi.base = 0;
@@ -189,9 +189,9 @@ namespace aerial_robot_msgs
       this->pitch_i_term[i] = u_pitch_i_termi.real;
       offset += sizeof(this->pitch_i_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_pitch_d_termi;
       u_pitch_d_termi.base = 0;
@@ -202,9 +202,9 @@ namespace aerial_robot_msgs
       this->pitch_d_term[i] = u_pitch_d_termi.real;
       offset += sizeof(this->pitch_d_term[i]);
       }
-      for( uint8_t i = 0; i < 4; i++){
+      for( uint8_t i = 0; i < 6; i++){
       union {
-        int32_t real;
+        float real;
         uint32_t base;
       } u_yaw_d_termi;
       u_yaw_d_termi.base = 0;
@@ -219,7 +219,7 @@ namespace aerial_robot_msgs
     }
 
     const char * getType(){ return "aerial_robot_msgs/ControlTerm"; };
-    const char * getMD5(){ return "d42317ebb11aab8fca9674992a86c258"; };
+    const char * getMD5(){ return "3611f5cc64bf60f96feeb281ff5df493"; };
 
   };
 

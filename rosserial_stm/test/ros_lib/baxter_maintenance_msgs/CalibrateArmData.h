@@ -47,7 +47,7 @@ namespace baxter_maintenance_msgs
     }
 
     const char * getType(){ return "baxter_maintenance_msgs/CalibrateArmData"; };
-    const char * getMD5(){ return "ba9ee949ea363f7bcfc8cc74e0bcb69d"; };
+    const char * getMD5(){ return "d41d8cd98f00b204e9800998ecf8427e"; };
 
   };
 

@@ -56,7 +56,7 @@ namespace jsk_footstep_msgs
     }
 
     const char * getType(){ return "jsk_footstep_msgs/FootstepArray"; };
-    const char * getMD5(){ return "0c6ec8f3a6945781372f53ae76659be3"; };
+    const char * getMD5(){ return "666e68f74630e27fde5843230c9fa8db"; };
 
   };
 

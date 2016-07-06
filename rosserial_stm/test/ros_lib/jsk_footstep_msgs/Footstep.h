@@ -135,7 +135,7 @@ namespace jsk_footstep_msgs
     }
 
     const char * getType(){ return "jsk_footstep_msgs/Footstep"; };
-    const char * getMD5(){ return "11813554933af2e5d31a6395b38a1042"; };
+    const char * getMD5(){ return "e9cf5aea8acd6e0d8c6251192b89a665"; };
 
   };
 

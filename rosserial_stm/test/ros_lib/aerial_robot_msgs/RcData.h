@@ -12,8 +12,8 @@ namespace aerial_robot_msgs
   class RcData : public ros::Msg
   {
     public:
-      int16_t roll;
-      int16_t pitch;
+      float roll;
+      float pitch;
       int16_t yaw;
       int16_t throttle;
 
@@ -29,20 +29,24 @@ namespace aerial_robot_msgs
     {
       int offset = 0;
       union {
-        int16_t real;
-        uint16_t base;
+        float real;
+        uint32_t base;
       } u_roll;
       u_roll.real = this->roll;
       *(outbuffer + offset + 0) = (u_roll.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_roll.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_roll.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_roll.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll);
       union {
-        int16_t real;
-        uint16_t base;
+        float real;
+        uint32_t base;
       } u_pitch;
       u_pitch.real = this->pitch;
       *(outbuffer + offset + 0) = (u_pitch.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_pitch.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_pitch.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_pitch.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch);
       union {
         int16_t real;
@@ -67,21 +71,25 @@ namespace aerial_robot_msgs
     {
       int offset = 0;
       union {
-        int16_t real;
-        uint16_t base;
+        float real;
+        uint32_t base;
       } u_roll;
       u_roll.base = 0;
-      u_roll.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_roll.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_roll.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_roll.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_roll.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_roll.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->roll = u_roll.real;
       offset += sizeof(this->roll);
       union {
-        int16_t real;
-        uint16_t base;
+        float real;
+        uint32_t base;
       } u_pitch;
       u_pitch.base = 0;
-      u_pitch.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_pitch.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_pitch.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_pitch.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_pitch.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_pitch.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->pitch = u_pitch.real;
       offset += sizeof(this->pitch);
       union {
@@ -106,7 +114,7 @@ namespace aerial_robot_msgs
     }
 
     const char * getType(){ return "aerial_robot_msgs/RcData"; };
-    const char * getMD5(){ return "575c8a2d3e94b794917a9e2b3c8a5413"; };
+    const char * getMD5(){ return "18ff9bb588cb17e2ae8713f0d79ec99f"; };
 
   };
 
