@@ -14,30 +14,32 @@ namespace aerial_robot_base
   {
     public:
       std_msgs::Header header;
-      uint8_t command_mode;
+      uint8_t pos_xy_nav_mode;
       float target_pos_x;
       float target_vel_x;
       float target_pos_y;
       float target_vel_y;
+      uint8_t psi_nav_mode;
       float target_vel_psi;
       float target_psi;
-      uint8_t pos_z_navi_mode;
+      uint8_t pos_z_nav_mode;
       float target_pos_z;
       float target_pos_diff_z;
       enum { NO_NAVIGATION =  0 };
-      enum { VEL_FLIGHT_MODE_COMMAND =  1 };
-      enum { POS_FLIGHT_MODE_COMMAND =  2 };
+      enum { VEL_MODE =  1 };
+      enum { POS_MODE =  2 };
 
     FlightNav():
       header(),
-      command_mode(0),
+      pos_xy_nav_mode(0),
       target_pos_x(0),
       target_vel_x(0),
       target_pos_y(0),
       target_vel_y(0),
+      psi_nav_mode(0),
       target_vel_psi(0),
       target_psi(0),
-      pos_z_navi_mode(0),
+      pos_z_nav_mode(0),
       target_pos_z(0),
       target_pos_diff_z(0)
     {
@@ -47,8 +49,8 @@ namespace aerial_robot_base
     {
       int offset = 0;
       offset += this->header.serialize(outbuffer + offset);
-      *(outbuffer + offset + 0) = (this->command_mode >> (8 * 0)) & 0xFF;
-      offset += sizeof(this->command_mode);
+      *(outbuffer + offset + 0) = (this->pos_xy_nav_mode >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->pos_xy_nav_mode);
       union {
         float real;
         uint32_t base;
@@ -89,6 +91,8 @@ namespace aerial_robot_base
       *(outbuffer + offset + 2) = (u_target_vel_y.base >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (u_target_vel_y.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->target_vel_y);
+      *(outbuffer + offset + 0) = (this->psi_nav_mode >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->psi_nav_mode);
       union {
         float real;
         uint32_t base;
@@ -109,8 +113,8 @@ namespace aerial_robot_base
       *(outbuffer + offset + 2) = (u_target_psi.base >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (u_target_psi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->target_psi);
-      *(outbuffer + offset + 0) = (this->pos_z_navi_mode >> (8 * 0)) & 0xFF;
-      offset += sizeof(this->pos_z_navi_mode);
+      *(outbuffer + offset + 0) = (this->pos_z_nav_mode >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->pos_z_nav_mode);
       union {
         float real;
         uint32_t base;
@@ -138,8 +142,8 @@ namespace aerial_robot_base
     {
       int offset = 0;
       offset += this->header.deserialize(inbuffer + offset);
-      this->command_mode =  ((uint8_t) (*(inbuffer + offset)));
-      offset += sizeof(this->command_mode);
+      this->pos_xy_nav_mode =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->pos_xy_nav_mode);
       union {
         float real;
         uint32_t base;
@@ -184,6 +188,8 @@ namespace aerial_robot_base
       u_target_vel_y.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->target_vel_y = u_target_vel_y.real;
       offset += sizeof(this->target_vel_y);
+      this->psi_nav_mode =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->psi_nav_mode);
       union {
         float real;
         uint32_t base;
@@ -206,8 +212,8 @@ namespace aerial_robot_base
       u_target_psi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->target_psi = u_target_psi.real;
       offset += sizeof(this->target_psi);
-      this->pos_z_navi_mode =  ((uint8_t) (*(inbuffer + offset)));
-      offset += sizeof(this->pos_z_navi_mode);
+      this->pos_z_nav_mode =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->pos_z_nav_mode);
       union {
         float real;
         uint32_t base;
@@ -234,7 +240,7 @@ namespace aerial_robot_base
     }
 
     const char * getType(){ return "aerial_robot_base/FlightNav"; };
-    const char * getMD5(){ return "3b52f34e11e02c2acf73a01613729057"; };
+    const char * getMD5(){ return "96c324a98d552a92edc16a1317be87af"; };
 
   };
 

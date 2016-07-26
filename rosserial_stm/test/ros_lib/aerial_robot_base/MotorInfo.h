@@ -18,6 +18,7 @@ namespace aerial_robot_base
       float f_pwm_offset;
       float m_f_rate;
       float pwm_rate;
+      float force_landing_pwm;
 
     MotorInfo():
       min_pwm(0),
@@ -25,7 +26,8 @@ namespace aerial_robot_base
       f_pwm_rate(0),
       f_pwm_offset(0),
       m_f_rate(0),
-      pwm_rate(0)
+      pwm_rate(0),
+      force_landing_pwm(0)
     {
     }
 
@@ -92,6 +94,16 @@ namespace aerial_robot_base
       *(outbuffer + offset + 2) = (u_pwm_rate.base >> (8 * 2)) & 0xFF;
       *(outbuffer + offset + 3) = (u_pwm_rate.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pwm_rate);
+      union {
+        float real;
+        uint32_t base;
+      } u_force_landing_pwm;
+      u_force_landing_pwm.real = this->force_landing_pwm;
+      *(outbuffer + offset + 0) = (u_force_landing_pwm.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_force_landing_pwm.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_force_landing_pwm.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_force_landing_pwm.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->force_landing_pwm);
       return offset;
     }
 
@@ -164,11 +176,22 @@ namespace aerial_robot_base
       u_pwm_rate.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
       this->pwm_rate = u_pwm_rate.real;
       offset += sizeof(this->pwm_rate);
+      union {
+        float real;
+        uint32_t base;
+      } u_force_landing_pwm;
+      u_force_landing_pwm.base = 0;
+      u_force_landing_pwm.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_force_landing_pwm.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_force_landing_pwm.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_force_landing_pwm.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->force_landing_pwm = u_force_landing_pwm.real;
+      offset += sizeof(this->force_landing_pwm);
      return offset;
     }
 
     const char * getType(){ return "aerial_robot_base/MotorInfo"; };
-    const char * getMD5(){ return "d96fbf68c692e6345982dae5c4be9384"; };
+    const char * getMD5(){ return "6784ab3ef33c90c484bb3271b0f5db90"; };
 
   };
 
