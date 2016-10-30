@@ -223,9 +223,8 @@ public:
         /* Disable the DMA transfer for transmit request by setting the DMAT bit
            in the UART CR3 register */
         huart->Instance->CR3 &= (uint32_t)~((uint32_t)USART_CR3_DMAT);
- /* Enable the UART Transmit Complete Interrupt */
-    __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
-      
+        /* Enable the UART Transmit Complete Interrupt */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
       }
     /* DMA Circular mode */
     else

@@ -165,8 +165,8 @@ public:
           huart->State = HAL_UART_STATE_READY;
       }
     //sepecial process
-for(int i = 0; i < RX_BURST_SIZE; i++)
-    ring_buf_->push(rx_value_[i]);
+    for(int i = 0; i < RX_BURST_SIZE; i++)
+      ring_buf_->push(rx_value_[i]);
   }
 
   static RingBuffer<uint8_t, RX_SIZE>* ring_buf_; //global 
@@ -223,8 +223,8 @@ public:
         /* Disable the DMA transfer for transmit request by setting the DMAT bit
            in the UART CR3 register */
         huart->Instance->CR3 &= (uint32_t)~((uint32_t)USART_CR3_DMAT);
- /* Enable the UART Transmit Complete Interrupt */
-    __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
+        /* Enable the UART Transmit Complete Interrupt */
+        __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
       
       }
     /* DMA Circular mode */
@@ -238,7 +238,7 @@ public:
             subscript_in_progress_++;
 
             if (subscript_in_progress_ == TX_SIZE)
-                subscript_in_progress_ = 0;
+              subscript_in_progress_ = 0;
 
             if (subscript_in_progress_ != subscript_to_add_)
               {
@@ -270,8 +270,8 @@ public:
     if (subscript_in_progress_ == subscript_to_add_ + 1 || ( subscript_to_add_ == TX_SIZE - 1 && subscript_in_progress_ == 0) )
       {
         //TODO: address the overflow
-		while(subscript_in_progress_ == subscript_to_add_ + 1 || ( subscript_to_add_ == TX_SIZE - 1 && subscript_in_progress_ == 0)){}
-      //  return;
+        while(subscript_in_progress_ == subscript_to_add_ + 1 || ( subscript_to_add_ == TX_SIZE - 1 && subscript_in_progress_ == 0)){}
+        //  return;
       }
 
 
@@ -312,15 +312,15 @@ public:
   uint8_t subscriptToAdd(){return subscript_to_add_;}
   bool idleFlag(){return idle_flag_;}
 
- uint8_t  getCurrentTransmitBufferLen()
-{
-return tx_buffer_unit_[subscript_in_progress_].tx_len_;
-}
+  uint8_t  getCurrentTransmitBufferLen()
+  {
+    return tx_buffer_unit_[subscript_in_progress_].tx_len_;
+  }
 
-uint8_t*  getCurrentTransmitBufferP()
-{
-return tx_buffer_unit_[subscript_in_progress_].tx_data_;
-}
+  uint8_t*  getCurrentTransmitBufferP()
+  {
+    return tx_buffer_unit_[subscript_in_progress_].tx_data_;
+  }
 
   static  struct TxBufferUnit<BUFFER_LENGTH> tx_buffer_unit_[TX_SIZE];
   static uint8_t subscript_in_progress_;
@@ -338,7 +338,7 @@ template<class Hardware,
          int MAX_TX_BUFFER=50,
          int MAX_TX_BUFFER_LENGTH=250,
          int MAX_RX_BUFFER=400,
-			int RX_BURST_SIZE=RX_BURST_MODE>
+         int RX_BURST_SIZE=RX_BURST_MODE>
 class UartDriver{
 public:
 
@@ -377,14 +377,14 @@ public:
   }
 
   TxBuffer<Hardware, MAX_TX_BUFFER, MAX_TX_BUFFER_LENGTH>* getTx() 
- {
-	return tx_;
- }
+  {
+    return tx_;
+  }
 
-RxBuffer<Hardware, MAX_RX_BUFFER, RX_BURST_SIZE>* getRx() 
- {
-	return rx_;
- }
+  RxBuffer<Hardware, MAX_RX_BUFFER, RX_BURST_SIZE>* getRx() 
+  {
+    return rx_;
+  }
 
 private:
   Hardware *huart_;
@@ -456,7 +456,7 @@ public:
 
   uint32_t time(){return HAL_GetTick();}
 
-UartDriver<serial_class>* getUartDriver() {return  iostream_;}
+  UartDriver<serial_class>* getUartDriver() {return  iostream_;}
 
 protected:
   serial_class*  io_;
