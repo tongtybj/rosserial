@@ -43,15 +43,15 @@ namespace ros
     int32_t sec_part = sec;
 
     while (nsec_part > 1000000000L)
-    {
-      nsec_part -= 1000000000L;
-      ++sec_part;
-    }
+      {
+        nsec_part -= 1000000000L;
+        ++sec_part;
+      }
     while (nsec_part < 0)
-    {
-      nsec_part += 1000000000L;
-      --sec_part;
-    }
+      {
+        nsec_part += 1000000000L;
+        --sec_part;
+      }
     sec = sec_part;
     nsec = nsec_part;
   }

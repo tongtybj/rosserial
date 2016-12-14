@@ -42,7 +42,7 @@
 
 namespace ros
 {
-/* be sure the max size of publisher and subscriber, as well as the size of message */
+  /* be sure the max size of publisher and subscriber, as well as the size of message */
   typedef NodeHandle_<STMF7Hardware, 20, 20, 255, 255> NodeHandle;
 }
 
