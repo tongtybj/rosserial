@@ -12,13 +12,13 @@ namespace aerial_robot_msgs
   class ControlTerm : public ros::Msg
   {
     public:
-      float roll_p_term[6];
-      float roll_i_term[6];
-      float roll_d_term[6];
-      float pitch_p_term[6];
-      float pitch_i_term[6];
-      float pitch_d_term[6];
-      float yaw_d_term[6];
+      int16_t roll_p_term[6];
+      int16_t roll_i_term[6];
+      int16_t roll_d_term[6];
+      int16_t pitch_p_term[6];
+      int16_t pitch_i_term[6];
+      int16_t pitch_d_term[6];
+      int16_t yaw_d_term[6];
 
     ControlTerm():
       roll_p_term(),
@@ -36,86 +36,72 @@ namespace aerial_robot_msgs
       int offset = 0;
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_roll_p_termi;
       u_roll_p_termi.real = this->roll_p_term[i];
       *(outbuffer + offset + 0) = (u_roll_p_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_roll_p_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_roll_p_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_roll_p_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll_p_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_roll_i_termi;
       u_roll_i_termi.real = this->roll_i_term[i];
       *(outbuffer + offset + 0) = (u_roll_i_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_roll_i_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_roll_i_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_roll_i_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll_i_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_roll_d_termi;
       u_roll_d_termi.real = this->roll_d_term[i];
       *(outbuffer + offset + 0) = (u_roll_d_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_roll_d_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_roll_d_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_roll_d_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->roll_d_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_pitch_p_termi;
       u_pitch_p_termi.real = this->pitch_p_term[i];
       *(outbuffer + offset + 0) = (u_pitch_p_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_pitch_p_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_pitch_p_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_pitch_p_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch_p_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_pitch_i_termi;
       u_pitch_i_termi.real = this->pitch_i_term[i];
       *(outbuffer + offset + 0) = (u_pitch_i_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_pitch_i_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_pitch_i_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_pitch_i_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch_i_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_pitch_d_termi;
       u_pitch_d_termi.real = this->pitch_d_term[i];
       *(outbuffer + offset + 0) = (u_pitch_d_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_pitch_d_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_pitch_d_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_pitch_d_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->pitch_d_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_yaw_d_termi;
       u_yaw_d_termi.real = this->yaw_d_term[i];
       *(outbuffer + offset + 0) = (u_yaw_d_termi.base >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (u_yaw_d_termi.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_yaw_d_termi.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_yaw_d_termi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->yaw_d_term[i]);
       }
       return offset;
@@ -126,92 +112,78 @@ namespace aerial_robot_msgs
       int offset = 0;
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_roll_p_termi;
       u_roll_p_termi.base = 0;
-      u_roll_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_roll_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_roll_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_roll_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_roll_p_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_roll_p_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->roll_p_term[i] = u_roll_p_termi.real;
       offset += sizeof(this->roll_p_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_roll_i_termi;
       u_roll_i_termi.base = 0;
-      u_roll_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_roll_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_roll_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_roll_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_roll_i_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_roll_i_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->roll_i_term[i] = u_roll_i_termi.real;
       offset += sizeof(this->roll_i_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_roll_d_termi;
       u_roll_d_termi.base = 0;
-      u_roll_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_roll_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_roll_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_roll_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_roll_d_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_roll_d_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->roll_d_term[i] = u_roll_d_termi.real;
       offset += sizeof(this->roll_d_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_pitch_p_termi;
       u_pitch_p_termi.base = 0;
-      u_pitch_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_pitch_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_pitch_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_pitch_p_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_pitch_p_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_pitch_p_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->pitch_p_term[i] = u_pitch_p_termi.real;
       offset += sizeof(this->pitch_p_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_pitch_i_termi;
       u_pitch_i_termi.base = 0;
-      u_pitch_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_pitch_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_pitch_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_pitch_i_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_pitch_i_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_pitch_i_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->pitch_i_term[i] = u_pitch_i_termi.real;
       offset += sizeof(this->pitch_i_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_pitch_d_termi;
       u_pitch_d_termi.base = 0;
-      u_pitch_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_pitch_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_pitch_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_pitch_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_pitch_d_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_pitch_d_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->pitch_d_term[i] = u_pitch_d_termi.real;
       offset += sizeof(this->pitch_d_term[i]);
       }
       for( uint8_t i = 0; i < 6; i++){
       union {
-        float real;
-        uint32_t base;
+        int16_t real;
+        uint16_t base;
       } u_yaw_d_termi;
       u_yaw_d_termi.base = 0;
-      u_yaw_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_yaw_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_yaw_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_yaw_d_termi.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      u_yaw_d_termi.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_yaw_d_termi.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       this->yaw_d_term[i] = u_yaw_d_termi.real;
       offset += sizeof(this->yaw_d_term[i]);
       }

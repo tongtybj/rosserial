@@ -173,6 +173,10 @@ namespace ros {
      *  serial input and callbacks for subscribers.
      */
 
+    virtual int publish()
+	{
+    	return hardware_.publish();
+	}
 
     virtual int spinOnce(){
 
