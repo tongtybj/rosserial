@@ -21,11 +21,6 @@ namespace rx
  {
     HAL_UART_Receive_DMA(huart, rx_value_, RX_PACKET_SIZE); //1byte receive protocol
     __HAL_UART_DISABLE_IT(huart, UART_IT_RXNE);
-
-#if 0
-	 HAL_UART_Receive_IT(huart, rx_value_, RX_PACKET_SIZE);
-#endif
-
   }
 
   int read()
@@ -46,9 +41,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   for(int i = 0; i < RX_PACKET_SIZE; i++)
     rx_buf_.push(rx_value_[i]);
-#if 0
-  HAL_UART_Receive_IT(huart, rx_value_, RX_PACKET_SIZE);
-#endif
 }
 
 
