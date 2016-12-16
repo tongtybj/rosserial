@@ -191,7 +191,7 @@ namespace aerial_robot_msgs
     }
 
     const char * getType(){ return "aerial_robot_msgs/RollPitchYawGain"; };
-    const char * getMD5(){ return "d181bd1d400ed134ca71cf55a7563fc8"; };
+    const char * getMD5(){ return "5d4527b390baee83b5733c8e324a3aca"; };
 
   };
 

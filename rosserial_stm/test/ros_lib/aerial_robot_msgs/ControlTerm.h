@@ -191,7 +191,7 @@ namespace aerial_robot_msgs
     }
 
     const char * getType(){ return "aerial_robot_msgs/ControlTerm"; };
-    const char * getMD5(){ return "3611f5cc64bf60f96feeb281ff5df493"; };
+    const char * getMD5(){ return "1e2d2f4c568a2b503f22e0156ff99a5a"; };
 
   };
 
