@@ -1,12 +1,12 @@
-#ifndef _ROS_aerial_robot_msgs_RollPitchYawGain_h
-#define _ROS_aerial_robot_msgs_RollPitchYawGain_h
+#ifndef _ROS_hydrus_transform_control_RollPitchYawGain_h
+#define _ROS_hydrus_transform_control_RollPitchYawGain_h
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
 
-namespace aerial_robot_msgs
+namespace hydrus_transform_control
 {
 
   class RollPitchYawGain : public ros::Msg
@@ -190,7 +190,7 @@ namespace aerial_robot_msgs
      return offset;
     }
 
-    const char * getType(){ return "aerial_robot_msgs/RollPitchYawGain"; };
+    const char * getType(){ return "hydrus_transform_control/RollPitchYawGain"; };
     const char * getMD5(){ return "5d4527b390baee83b5733c8e324a3aca"; };
 
   };
