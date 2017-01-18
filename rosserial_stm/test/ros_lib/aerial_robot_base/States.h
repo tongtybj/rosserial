@@ -56,7 +56,7 @@ namespace aerial_robot_base
     }
 
     const char * getType(){ return "aerial_robot_base/States"; };
-    const char * getMD5(){ return "e5a21c76f8943f802a32a7d896ec59b9"; };
+    const char * getMD5(){ return "73b0da733af1017fc4584aa1e9b313a2"; };
 
   };
 
