@@ -13,11 +13,13 @@ namespace aerial_robot_msgs
   {
     public:
       float angles[3];
-      float base_throttle[6];
+      uint8_t base_throttle_length;
+      float st_base_throttle;
+      float * base_throttle;
 
     FourAxisCommand():
       angles(),
-      base_throttle()
+      base_throttle_length(0), base_throttle(NULL)
     {
     }
 
@@ -36,7 +38,11 @@ namespace aerial_robot_msgs
       *(outbuffer + offset + 3) = (u_anglesi.base >> (8 * 3)) & 0xFF;
       offset += sizeof(this->angles[i]);
       }
-      for( uint8_t i = 0; i < 6; i++){
+      *(outbuffer + offset++) = base_throttle_length;
+      *(outbuffer + offset++) = 0;
+      *(outbuffer + offset++) = 0;
+      *(outbuffer + offset++) = 0;
+      for( uint8_t i = 0; i < base_throttle_length; i++){
       union {
         float real;
         uint32_t base;
@@ -67,24 +73,30 @@ namespace aerial_robot_msgs
       this->angles[i] = u_anglesi.real;
       offset += sizeof(this->angles[i]);
       }
-      for( uint8_t i = 0; i < 6; i++){
+      uint8_t base_throttle_lengthT = *(inbuffer + offset++);
+      if(base_throttle_lengthT > base_throttle_length)
+        this->base_throttle = (float*)realloc(this->base_throttle, base_throttle_lengthT * sizeof(float));
+      offset += 3;
+      base_throttle_length = base_throttle_lengthT;
+      for( uint8_t i = 0; i < base_throttle_length; i++){
       union {
         float real;
         uint32_t base;
-      } u_base_throttlei;
-      u_base_throttlei.base = 0;
-      u_base_throttlei.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_base_throttlei.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_base_throttlei.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_base_throttlei.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
-      this->base_throttle[i] = u_base_throttlei.real;
-      offset += sizeof(this->base_throttle[i]);
+      } u_st_base_throttle;
+      u_st_base_throttle.base = 0;
+      u_st_base_throttle.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_st_base_throttle.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_st_base_throttle.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_st_base_throttle.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->st_base_throttle = u_st_base_throttle.real;
+      offset += sizeof(this->st_base_throttle);
+        memcpy( &(this->base_throttle[i]), &(this->st_base_throttle), sizeof(float));
       }
      return offset;
     }
 
     const char * getType(){ return "aerial_robot_msgs/FourAxisCommand"; };
-    const char * getMD5(){ return "d76f5497366bf918d240b8929e3c76af"; };
+    const char * getMD5(){ return "7358e7c9be3cfaa92377f4a91a2f3751"; };
 
   };
 

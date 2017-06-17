@@ -41,13 +41,9 @@ static const char TOPICS[] = "rosapi/Topics";
       uint8_t topics_length;
       char* st_topics;
       char* * topics;
-      uint8_t types_length;
-      char* st_types;
-      char* * types;
 
     TopicsResponse():
-      topics_length(0), topics(NULL),
-      types_length(0), types(NULL)
+      topics_length(0), topics(NULL)
     {
     }
 
@@ -64,17 +60,6 @@ static const char TOPICS[] = "rosapi/Topics";
       offset += 4;
       memcpy(outbuffer + offset, this->topics[i], length_topicsi);
       offset += length_topicsi;
-      }
-      *(outbuffer + offset++) = types_length;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      *(outbuffer + offset++) = 0;
-      for( uint8_t i = 0; i < types_length; i++){
-      uint32_t length_typesi = strlen(this->types[i]);
-      memcpy(outbuffer + offset, &length_typesi, sizeof(uint32_t));
-      offset += 4;
-      memcpy(outbuffer + offset, this->types[i], length_typesi);
-      offset += length_typesi;
       }
       return offset;
     }
@@ -99,28 +84,11 @@ static const char TOPICS[] = "rosapi/Topics";
       offset += length_st_topics;
         memcpy( &(this->topics[i]), &(this->st_topics), sizeof(char*));
       }
-      uint8_t types_lengthT = *(inbuffer + offset++);
-      if(types_lengthT > types_length)
-        this->types = (char**)realloc(this->types, types_lengthT * sizeof(char*));
-      offset += 3;
-      types_length = types_lengthT;
-      for( uint8_t i = 0; i < types_length; i++){
-      uint32_t length_st_types;
-      memcpy(&length_st_types, (inbuffer + offset), sizeof(uint32_t));
-      offset += 4;
-      for(unsigned int k= offset; k< offset+length_st_types; ++k){
-          inbuffer[k-1]=inbuffer[k];
-      }
-      inbuffer[offset+length_st_types-1]=0;
-      this->st_types = (char *)(inbuffer + offset-1);
-      offset += length_st_types;
-        memcpy( &(this->types[i]), &(this->st_types), sizeof(char*));
-      }
      return offset;
     }
 
     const char * getType(){ return TOPICS; };
-    const char * getMD5(){ return "d966d98fc333fa1f3135af765eac1ba8"; };
+    const char * getMD5(){ return "b0eef9a05d4e829092fc2f2c3c2aad3d"; };
 
   };
 
