@@ -1,15 +1,15 @@
-#ifndef _ROS_hydrus_transform_control_RollPitchYawGain_h
-#define _ROS_hydrus_transform_control_RollPitchYawGain_h
+#ifndef _ROS_aerial_robot_msgs_RollPitchYawTerm_h
+#define _ROS_aerial_robot_msgs_RollPitchYawTerm_h
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
 
-namespace hydrus_transform_control
+namespace aerial_robot_msgs
 {
 
-  class RollPitchYawGain : public ros::Msg
+  class RollPitchYawTerm : public ros::Msg
   {
     public:
       int16_t roll_p;
@@ -20,7 +20,7 @@ namespace hydrus_transform_control
       int16_t pitch_d;
       int16_t yaw_d;
 
-    RollPitchYawGain():
+    RollPitchYawTerm():
       roll_p(0),
       roll_i(0),
       roll_d(0),
@@ -162,7 +162,7 @@ namespace hydrus_transform_control
      return offset;
     }
 
-    const char * getType(){ return "hydrus_transform_control/RollPitchYawGain"; };
+    const char * getType(){ return "aerial_robot_msgs/RollPitchYawTerm"; };
     const char * getMD5(){ return "14a179f5309ca5bc435eceedda0bcca3"; };
 
   };
