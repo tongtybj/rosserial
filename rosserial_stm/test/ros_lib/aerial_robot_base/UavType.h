@@ -14,7 +14,7 @@ namespace aerial_robot_base
     public:
       uint8_t motor_num;
       uint8_t uav_model;
-      uint8_t root_link;
+      uint8_t baselink;
       enum { DRONE =  0  };
       enum { HYDRUS =  1  };
       enum { RING =  2  };
@@ -24,7 +24,7 @@ namespace aerial_robot_base
     UavType():
       motor_num(0),
       uav_model(0),
-      root_link(0)
+      baselink(0)
     {
     }
 
@@ -35,8 +35,8 @@ namespace aerial_robot_base
       offset += sizeof(this->motor_num);
       *(outbuffer + offset + 0) = (this->uav_model >> (8 * 0)) & 0xFF;
       offset += sizeof(this->uav_model);
-      *(outbuffer + offset + 0) = (this->root_link >> (8 * 0)) & 0xFF;
-      offset += sizeof(this->root_link);
+      *(outbuffer + offset + 0) = (this->baselink >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->baselink);
       return offset;
     }
 
@@ -47,13 +47,13 @@ namespace aerial_robot_base
       offset += sizeof(this->motor_num);
       this->uav_model =  ((uint8_t) (*(inbuffer + offset)));
       offset += sizeof(this->uav_model);
-      this->root_link =  ((uint8_t) (*(inbuffer + offset)));
-      offset += sizeof(this->root_link);
+      this->baselink =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->baselink);
      return offset;
     }
 
     const char * getType(){ return "aerial_robot_base/UavType"; };
-    const char * getMD5(){ return "51b1d8b931b546e0db6496342aada779"; };
+    const char * getMD5(){ return "f49dc0235ab98ba6613ffe66f9b09cd1"; };
 
   };
 
