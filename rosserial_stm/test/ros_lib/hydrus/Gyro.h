@@ -1,5 +1,5 @@
-#ifndef _ROS_hydrus_transform_control_Gyro_h
-#define _ROS_hydrus_transform_control_Gyro_h
+#ifndef _ROS_hydrus_Gyro_h
+#define _ROS_hydrus_Gyro_h
 
 #include <stdint.h>
 #include <string.h>
@@ -7,7 +7,7 @@
 #include "ros/msg.h"
 #include "ros/time.h"
 
-namespace hydrus_transform_control
+namespace hydrus
 {
 
   class Gyro : public ros::Msg
@@ -121,7 +121,7 @@ namespace hydrus_transform_control
      return offset;
     }
 
-    const char * getType(){ return "hydrus_transform_control/Gyro"; };
+    const char * getType(){ return "hydrus/Gyro"; };
     const char * getMD5(){ return "8729df063c771805b10be4aa77006574"; };
 
   };

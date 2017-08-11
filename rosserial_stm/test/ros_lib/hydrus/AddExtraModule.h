@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include "ros/msg.h"
 
-namespace hydrus_transform_control
+namespace hydrus
 {
 
-static const char ADDEXTRAMODULE[] = "hydrus_transform_control/AddExtraModule";
+static const char ADDEXTRAMODULE[] = "hydrus/AddExtraModule";
 
   class AddExtraModuleRequest : public ros::Msg
   {

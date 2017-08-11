@@ -15,6 +15,7 @@ namespace aerial_robot_base
     public:
       std_msgs::Header header;
       uint8_t control_frame;
+      uint8_t target;
       uint8_t pos_xy_nav_mode;
       float target_pos_x;
       float target_vel_x;
@@ -34,10 +35,13 @@ namespace aerial_robot_base
       enum { ACC_MODE =  3 };
       enum { WORLD_FRAME =  0 };
       enum { LOCAL_FRAME =  1 };
+      enum { BASELINK =  0 };
+      enum { COG =  1 };
 
     FlightNav():
       header(),
       control_frame(0),
+      target(0),
       pos_xy_nav_mode(0),
       target_pos_x(0),
       target_vel_x(0),
@@ -60,6 +64,8 @@ namespace aerial_robot_base
       offset += this->header.serialize(outbuffer + offset);
       *(outbuffer + offset + 0) = (this->control_frame >> (8 * 0)) & 0xFF;
       offset += sizeof(this->control_frame);
+      *(outbuffer + offset + 0) = (this->target >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->target);
       *(outbuffer + offset + 0) = (this->pos_xy_nav_mode >> (8 * 0)) & 0xFF;
       offset += sizeof(this->pos_xy_nav_mode);
       union {
@@ -175,6 +181,8 @@ namespace aerial_robot_base
       offset += this->header.deserialize(inbuffer + offset);
       this->control_frame =  ((uint8_t) (*(inbuffer + offset)));
       offset += sizeof(this->control_frame);
+      this->target =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->target);
       this->pos_xy_nav_mode =  ((uint8_t) (*(inbuffer + offset)));
       offset += sizeof(this->pos_xy_nav_mode);
       union {
@@ -295,7 +303,7 @@ namespace aerial_robot_base
     }
 
     const char * getType(){ return "aerial_robot_base/FlightNav"; };
-    const char * getMD5(){ return "b7f126dd77ce7466a46f71f97bf84ecd"; };
+    const char * getMD5(){ return "747ed9b839be4ff9f5f3fb3dfae5d932"; };
 
   };
 

@@ -1,12 +1,12 @@
-#ifndef _ROS_hydrus_transform_control_ServoControl_h
-#define _ROS_hydrus_transform_control_ServoControl_h
+#ifndef _ROS_hydrus_ServoControl_h
+#define _ROS_hydrus_ServoControl_h
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include "ros/msg.h"
 
-namespace hydrus_transform_control
+namespace hydrus
 {
 
   class ServoControl : public ros::Msg
@@ -53,7 +53,7 @@ namespace hydrus_transform_control
      return offset;
     }
 
-    const char * getType(){ return "hydrus_transform_control/ServoControl"; };
+    const char * getType(){ return "hydrus/ServoControl"; };
     const char * getMD5(){ return "95544a90697a1b7211173559621536dd"; };
 
   };
