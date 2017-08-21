@@ -14,7 +14,7 @@ namespace hydrus
     public:
       uint16_t angle;
       uint8_t temp;
-      uint8_t load;
+      int16_t load;
       uint8_t error;
 
     ServoState():
@@ -33,7 +33,13 @@ namespace hydrus
       offset += sizeof(this->angle);
       *(outbuffer + offset + 0) = (this->temp >> (8 * 0)) & 0xFF;
       offset += sizeof(this->temp);
-      *(outbuffer + offset + 0) = (this->load >> (8 * 0)) & 0xFF;
+      union {
+        int16_t real;
+        uint16_t base;
+      } u_load;
+      u_load.real = this->load;
+      *(outbuffer + offset + 0) = (u_load.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_load.base >> (8 * 1)) & 0xFF;
       offset += sizeof(this->load);
       *(outbuffer + offset + 0) = (this->error >> (8 * 0)) & 0xFF;
       offset += sizeof(this->error);
@@ -48,7 +54,14 @@ namespace hydrus
       offset += sizeof(this->angle);
       this->temp =  ((uint8_t) (*(inbuffer + offset)));
       offset += sizeof(this->temp);
-      this->load =  ((uint8_t) (*(inbuffer + offset)));
+      union {
+        int16_t real;
+        uint16_t base;
+      } u_load;
+      u_load.base = 0;
+      u_load.base |= ((uint16_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_load.base |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      this->load = u_load.real;
       offset += sizeof(this->load);
       this->error =  ((uint8_t) (*(inbuffer + offset)));
       offset += sizeof(this->error);
@@ -56,7 +69,7 @@ namespace hydrus
     }
 
     const char * getType(){ return "hydrus/ServoState"; };
-    const char * getMD5(){ return "71af5c838a9b5729a92e8495a244baf5"; };
+    const char * getMD5(){ return "442e16ed987a1220312c2a7fa165be4c"; };
 
   };
 

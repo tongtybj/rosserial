@@ -52,6 +52,7 @@ namespace visualization_msgs
       enum { ADD = 0 };
       enum { MODIFY = 0 };
       enum { DELETE = 2 };
+      enum { DELETEALL = 3 };
 
     Marker():
       header(),
@@ -280,7 +281,7 @@ namespace visualization_msgs
     }
 
     const char * getType(){ return "visualization_msgs/Marker"; };
-    const char * getMD5(){ return "18326976df9d29249efc939e00342cde"; };
+    const char * getMD5(){ return "4048c9de2a16f4ae8e0538085ebf1b97"; };
 
   };
 

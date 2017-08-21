@@ -51,7 +51,7 @@ namespace visualization_msgs
     }
 
     const char * getType(){ return "visualization_msgs/MarkerArray"; };
-    const char * getMD5(){ return "90da67007c26525f655c1c269094e39f"; };
+    const char * getMD5(){ return "d155b9ce5188fbaf89745847fd5882d7"; };
 
   };
 

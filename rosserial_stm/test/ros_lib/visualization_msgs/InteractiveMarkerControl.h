@@ -147,7 +147,7 @@ namespace visualization_msgs
     }
 
     const char * getType(){ return "visualization_msgs/InteractiveMarkerControl"; };
-    const char * getMD5(){ return "e3a939c98cdd4f709d8e1dec2a9c3f37"; };
+    const char * getMD5(){ return "b3c81e785788195d1840b86c28da1aac"; };
 
   };
 

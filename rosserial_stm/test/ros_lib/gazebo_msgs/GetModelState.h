@@ -6,6 +6,7 @@
 #include "ros/msg.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Twist.h"
+#include "std_msgs/Header.h"
 
 namespace gazebo_msgs
 {
@@ -72,12 +73,14 @@ static const char GETMODELSTATE[] = "gazebo_msgs/GetModelState";
   class GetModelStateResponse : public ros::Msg
   {
     public:
+      std_msgs::Header header;
       geometry_msgs::Pose pose;
       geometry_msgs::Twist twist;
       bool success;
       const char* status_message;
 
     GetModelStateResponse():
+      header(),
       pose(),
       twist(),
       success(0),
@@ -88,6 +91,7 @@ static const char GETMODELSTATE[] = "gazebo_msgs/GetModelState";
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
+      offset += this->header.serialize(outbuffer + offset);
       offset += this->pose.serialize(outbuffer + offset);
       offset += this->twist.serialize(outbuffer + offset);
       union {
@@ -108,6 +112,7 @@ static const char GETMODELSTATE[] = "gazebo_msgs/GetModelState";
     virtual int deserialize(unsigned char *inbuffer)
     {
       int offset = 0;
+      offset += this->header.deserialize(inbuffer + offset);
       offset += this->pose.deserialize(inbuffer + offset);
       offset += this->twist.deserialize(inbuffer + offset);
       union {
@@ -131,7 +136,7 @@ static const char GETMODELSTATE[] = "gazebo_msgs/GetModelState";
     }
 
     const char * getType(){ return GETMODELSTATE; };
-    const char * getMD5(){ return "1f8f991dc94e0cb27fe61383e0f576bb"; };
+    const char * getMD5(){ return "ccd51739bb00f0141629e87b792e92b9"; };
 
   };
 

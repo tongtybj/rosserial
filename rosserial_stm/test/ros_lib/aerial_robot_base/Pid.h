@@ -24,20 +24,20 @@ namespace aerial_robot_base
       uint8_t d_term_length;
       float st_d_term;
       float * d_term;
-      float pos_err_transform;
-      float pos_err_no_transform;
-      float vel_err_transform;
-      float vel_err_no_transform;
+      float target_pos;
+      float pos_err;
+      float target_vel;
+      float vel_err;
 
     Pid():
       total_length(0), total(NULL),
       p_term_length(0), p_term(NULL),
       i_term_length(0), i_term(NULL),
       d_term_length(0), d_term(NULL),
-      pos_err_transform(0),
-      pos_err_no_transform(0),
-      vel_err_transform(0),
-      vel_err_no_transform(0)
+      target_pos(0),
+      pos_err(0),
+      target_vel(0),
+      vel_err(0)
     {
     }
 
@@ -111,43 +111,43 @@ namespace aerial_robot_base
       union {
         float real;
         uint32_t base;
-      } u_pos_err_transform;
-      u_pos_err_transform.real = this->pos_err_transform;
-      *(outbuffer + offset + 0) = (u_pos_err_transform.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_pos_err_transform.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_pos_err_transform.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_pos_err_transform.base >> (8 * 3)) & 0xFF;
-      offset += sizeof(this->pos_err_transform);
+      } u_target_pos;
+      u_target_pos.real = this->target_pos;
+      *(outbuffer + offset + 0) = (u_target_pos.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_target_pos.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_target_pos.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_target_pos.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->target_pos);
       union {
         float real;
         uint32_t base;
-      } u_pos_err_no_transform;
-      u_pos_err_no_transform.real = this->pos_err_no_transform;
-      *(outbuffer + offset + 0) = (u_pos_err_no_transform.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_pos_err_no_transform.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_pos_err_no_transform.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_pos_err_no_transform.base >> (8 * 3)) & 0xFF;
-      offset += sizeof(this->pos_err_no_transform);
+      } u_pos_err;
+      u_pos_err.real = this->pos_err;
+      *(outbuffer + offset + 0) = (u_pos_err.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_pos_err.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_pos_err.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_pos_err.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->pos_err);
       union {
         float real;
         uint32_t base;
-      } u_vel_err_transform;
-      u_vel_err_transform.real = this->vel_err_transform;
-      *(outbuffer + offset + 0) = (u_vel_err_transform.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_vel_err_transform.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_vel_err_transform.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_vel_err_transform.base >> (8 * 3)) & 0xFF;
-      offset += sizeof(this->vel_err_transform);
+      } u_target_vel;
+      u_target_vel.real = this->target_vel;
+      *(outbuffer + offset + 0) = (u_target_vel.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_target_vel.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_target_vel.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_target_vel.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->target_vel);
       union {
         float real;
         uint32_t base;
-      } u_vel_err_no_transform;
-      u_vel_err_no_transform.real = this->vel_err_no_transform;
-      *(outbuffer + offset + 0) = (u_vel_err_no_transform.base >> (8 * 0)) & 0xFF;
-      *(outbuffer + offset + 1) = (u_vel_err_no_transform.base >> (8 * 1)) & 0xFF;
-      *(outbuffer + offset + 2) = (u_vel_err_no_transform.base >> (8 * 2)) & 0xFF;
-      *(outbuffer + offset + 3) = (u_vel_err_no_transform.base >> (8 * 3)) & 0xFF;
-      offset += sizeof(this->vel_err_no_transform);
+      } u_vel_err;
+      u_vel_err.real = this->vel_err;
+      *(outbuffer + offset + 0) = (u_vel_err.base >> (8 * 0)) & 0xFF;
+      *(outbuffer + offset + 1) = (u_vel_err.base >> (8 * 1)) & 0xFF;
+      *(outbuffer + offset + 2) = (u_vel_err.base >> (8 * 2)) & 0xFF;
+      *(outbuffer + offset + 3) = (u_vel_err.base >> (8 * 3)) & 0xFF;
+      offset += sizeof(this->vel_err);
       return offset;
     }
 
@@ -233,52 +233,52 @@ namespace aerial_robot_base
       union {
         float real;
         uint32_t base;
-      } u_pos_err_transform;
-      u_pos_err_transform.base = 0;
-      u_pos_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_pos_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_pos_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_pos_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
-      this->pos_err_transform = u_pos_err_transform.real;
-      offset += sizeof(this->pos_err_transform);
+      } u_target_pos;
+      u_target_pos.base = 0;
+      u_target_pos.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_target_pos.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_target_pos.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_target_pos.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->target_pos = u_target_pos.real;
+      offset += sizeof(this->target_pos);
       union {
         float real;
         uint32_t base;
-      } u_pos_err_no_transform;
-      u_pos_err_no_transform.base = 0;
-      u_pos_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_pos_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_pos_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_pos_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
-      this->pos_err_no_transform = u_pos_err_no_transform.real;
-      offset += sizeof(this->pos_err_no_transform);
+      } u_pos_err;
+      u_pos_err.base = 0;
+      u_pos_err.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_pos_err.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_pos_err.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_pos_err.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->pos_err = u_pos_err.real;
+      offset += sizeof(this->pos_err);
       union {
         float real;
         uint32_t base;
-      } u_vel_err_transform;
-      u_vel_err_transform.base = 0;
-      u_vel_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_vel_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_vel_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_vel_err_transform.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
-      this->vel_err_transform = u_vel_err_transform.real;
-      offset += sizeof(this->vel_err_transform);
+      } u_target_vel;
+      u_target_vel.base = 0;
+      u_target_vel.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_target_vel.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_target_vel.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_target_vel.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->target_vel = u_target_vel.real;
+      offset += sizeof(this->target_vel);
       union {
         float real;
         uint32_t base;
-      } u_vel_err_no_transform;
-      u_vel_err_no_transform.base = 0;
-      u_vel_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
-      u_vel_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
-      u_vel_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
-      u_vel_err_no_transform.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
-      this->vel_err_no_transform = u_vel_err_no_transform.real;
-      offset += sizeof(this->vel_err_no_transform);
+      } u_vel_err;
+      u_vel_err.base = 0;
+      u_vel_err.base |= ((uint32_t) (*(inbuffer + offset + 0))) << (8 * 0);
+      u_vel_err.base |= ((uint32_t) (*(inbuffer + offset + 1))) << (8 * 1);
+      u_vel_err.base |= ((uint32_t) (*(inbuffer + offset + 2))) << (8 * 2);
+      u_vel_err.base |= ((uint32_t) (*(inbuffer + offset + 3))) << (8 * 3);
+      this->vel_err = u_vel_err.real;
+      offset += sizeof(this->vel_err);
      return offset;
     }
 
     const char * getType(){ return "aerial_robot_base/Pid"; };
-    const char * getMD5(){ return "b7a7d16748316cbded44d5e489e4a5ea"; };
+    const char * getMD5(){ return "b3e6c2ee35e0fdf2dc410fc4ba4f1e0c"; };
 
   };
 

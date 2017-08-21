@@ -77,7 +77,7 @@ static const char LISTCONTROLLERS[] = "controller_manager_msgs/ListControllers";
     }
 
     const char * getType(){ return LISTCONTROLLERS; };
-    const char * getMD5(){ return "12c85fca1984c8ec86264f3d00b938f2"; };
+    const char * getMD5(){ return "1341feb2e63fa791f855565d0da950d8"; };
 
   };
 
