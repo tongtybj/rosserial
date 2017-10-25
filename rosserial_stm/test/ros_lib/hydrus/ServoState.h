@@ -12,12 +12,14 @@ namespace hydrus
   class ServoState : public ros::Msg
   {
     public:
+      uint8_t index;
       uint16_t angle;
       uint8_t temp;
       int16_t load;
       uint8_t error;
 
     ServoState():
+      index(0),
       angle(0),
       temp(0),
       load(0),
@@ -28,6 +30,8 @@ namespace hydrus
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
+      *(outbuffer + offset + 0) = (this->index >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->index);
       *(outbuffer + offset + 0) = (this->angle >> (8 * 0)) & 0xFF;
       *(outbuffer + offset + 1) = (this->angle >> (8 * 1)) & 0xFF;
       offset += sizeof(this->angle);
@@ -49,6 +53,8 @@ namespace hydrus
     virtual int deserialize(unsigned char *inbuffer)
     {
       int offset = 0;
+      this->index =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->index);
       this->angle =  ((uint16_t) (*(inbuffer + offset)));
       this->angle |= ((uint16_t) (*(inbuffer + offset + 1))) << (8 * 1);
       offset += sizeof(this->angle);
@@ -69,7 +75,7 @@ namespace hydrus
     }
 
     const char * getType(){ return "hydrus/ServoState"; };
-    const char * getMD5(){ return "442e16ed987a1220312c2a7fa165be4c"; };
+    const char * getMD5(){ return "be7ff99a68441fad6fcb1762168ca85d"; };
 
   };
 

@@ -1,5 +1,5 @@
-#ifndef _ROS_hydrus_ServoControl_h
-#define _ROS_hydrus_ServoControl_h
+#ifndef _ROS_hydrus_ServoControlCmd_h
+#define _ROS_hydrus_ServoControlCmd_h
 
 #include <stdint.h>
 #include <string.h>
@@ -9,14 +9,18 @@
 namespace hydrus
 {
 
-  class ServoControl : public ros::Msg
+  class ServoControlCmd : public ros::Msg
   {
     public:
+      uint8_t index_length;
+      uint8_t st_index;
+      uint8_t * index;
       uint8_t angles_length;
       uint16_t st_angles;
       uint16_t * angles;
 
-    ServoControl():
+    ServoControlCmd():
+      index_length(0), index(NULL),
       angles_length(0), angles(NULL)
     {
     }
@@ -24,6 +28,14 @@ namespace hydrus
     virtual int serialize(unsigned char *outbuffer) const
     {
       int offset = 0;
+      *(outbuffer + offset++) = index_length;
+      *(outbuffer + offset++) = 0;
+      *(outbuffer + offset++) = 0;
+      *(outbuffer + offset++) = 0;
+      for( uint8_t i = 0; i < index_length; i++){
+      *(outbuffer + offset + 0) = (this->index[i] >> (8 * 0)) & 0xFF;
+      offset += sizeof(this->index[i]);
+      }
       *(outbuffer + offset++) = angles_length;
       *(outbuffer + offset++) = 0;
       *(outbuffer + offset++) = 0;
@@ -39,6 +51,16 @@ namespace hydrus
     virtual int deserialize(unsigned char *inbuffer)
     {
       int offset = 0;
+      uint8_t index_lengthT = *(inbuffer + offset++);
+      if(index_lengthT > index_length)
+        this->index = (uint8_t*)realloc(this->index, index_lengthT * sizeof(uint8_t));
+      offset += 3;
+      index_length = index_lengthT;
+      for( uint8_t i = 0; i < index_length; i++){
+      this->st_index =  ((uint8_t) (*(inbuffer + offset)));
+      offset += sizeof(this->st_index);
+        memcpy( &(this->index[i]), &(this->st_index), sizeof(uint8_t));
+      }
       uint8_t angles_lengthT = *(inbuffer + offset++);
       if(angles_lengthT > angles_length)
         this->angles = (uint16_t*)realloc(this->angles, angles_lengthT * sizeof(uint16_t));
@@ -53,8 +75,8 @@ namespace hydrus
      return offset;
     }
 
-    const char * getType(){ return "hydrus/ServoControl"; };
-    const char * getMD5(){ return "95544a90697a1b7211173559621536dd"; };
+    const char * getType(){ return "hydrus/ServoControlCmd"; };
+    const char * getMD5(){ return "43c65031eacc80fd6b5892b2e27c4273"; };
 
   };
 
