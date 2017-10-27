@@ -18,10 +18,11 @@ namespace hydrus
       int32_t * data;
       enum { SET_SLAVE_ID =  0 };
       enum { SET_IMU_SEND_FLAG =  1 };
-      enum { SET_SERVO_PID_GAIN =  2 };
-      enum { SET_SERVO_PROFILE_VEL =  3 };
-      enum { SET_SERVO_SEND_DATA_FLAG =  4 };
-      enum { SET_CURRENT_LIMIT =  5 };
+      enum { SET_SERVO_HOMING_OFFSET =  2 };
+      enum { SET_SERVO_PID_GAIN =  3 };
+      enum { SET_SERVO_PROFILE_VEL =  4 };
+      enum { SET_SERVO_SEND_DATA_FLAG =  5 };
+      enum { SET_SERVO_CURRENT_LIMIT =  6 };
 
     BoardConfigCmd():
       command(0),
