@@ -74,7 +74,7 @@ namespace hydrus
     }
 
     const char * getType(){ return "hydrus/ServoStates"; };
-    const char * getMD5(){ return "36208655eaa26b3a744cd3b2db610b01"; };
+    const char * getMD5(){ return "6d1b17de249ae8c57df97782f91fe8e0"; };
 
   };
 
