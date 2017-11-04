@@ -82,7 +82,7 @@ namespace hydrus
     }
 
     const char * getType(){ return "hydrus/BoardConfigCmd"; };
-    const char * getMD5(){ return "b5313f812a584f4df9ec17f233188f3f"; };
+    const char * getMD5(){ return "fe72e9366d604d0754f9495f10cd2281"; };
 
   };
 
