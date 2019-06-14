@@ -70,7 +70,7 @@ public:
     : socket_(io_service),
       sync_timer_(io_service),
       require_check_timer_(io_service),
-      ros_spin_timer_(io_service),
+      spinner_(2),
       async_read_buffer_(socket_, buffer_max,
                          boost::bind(&Session::read_failed, this,
                                      boost::asio::placeholders::error))
@@ -80,18 +80,7 @@ public:
     timeout_interval_ = boost::posix_time::milliseconds(5000);
     attempt_interval_ = boost::posix_time::milliseconds(1000);
     require_check_interval_ = boost::posix_time::milliseconds(1000);
-    ros_spin_interval_ = boost::posix_time::milliseconds(10);
     require_param_name_ = "~require";
-
-    nh_.setCallbackQueue(&ros_callback_queue_);
-
-    // Intermittent callback to service ROS callbacks. To avoid polling like this,
-    // CallbackQueue could in the future be extended with a scheme to monitor for
-    // callbacks on another thread, and then queue them up to be executed on this one.
-    ros_spin_timer_.expires_from_now(ros_spin_interval_);
-    ros_spin_timer_.async_wait(boost::bind(&Session::ros_spin_timeout, this,
-                                           boost::asio::placeholders::error));
-
 
     signal(SIGINT, &Session::signal_catch);
   }
@@ -130,21 +119,20 @@ public:
     active_ = true;
     attempt_sync();
     read_sync_header();
+
+    spinner_.start();
   }
 
   void stop()
   {
     std::cout << "stop!!!" << std::endl;
-    // Send stop tx command to MCU
-    //std::vector<uint8_t> message(0);
-    //write_message(message, rosserial_msgs::TopicInfo::ID_TX_STOP);
-
-    // Abort any pending ROS callbacks.
-    ros_callback_queue_.clear();
 
     // Abort active session timer callbacks, if present.
     sync_timer_.cancel();
     require_check_timer_.cancel();
+
+    // stop the ros::AsyncSpinner
+    spinner_.stop();
 
     // Reset the state of the session, dropping any publishers or subscribers
     // we currently know about from this client.
@@ -175,14 +163,11 @@ public:
   }
 
 private:
-  /**
-   * Periodic function which handles calling ROS callbacks, executed on the same
-   * io_service thread to avoid a concurrency nightmare.
-   */
-  void ros_spin_timeout(const boost::system::error_code& error) {
-    ros_callback_queue_.callAvailable();
+  //// RECEIVING MESSAGES ////
+  // TODO: Total message timeout, implement primarily in ReadBuffer.
+  void read_sync_header() {
+    async_read_buffer_.read(1, boost::bind(&Session::read_sync_first, this, _1));
 
-    // Stop the tx from MCU, not sure whether the process should be here
     if(terminate_start_flag_ )
       {
         std::vector<uint8_t> message(0);
@@ -191,21 +176,6 @@ private:
         ros::shutdown();
         return;
       }
-
-    if (ros::ok())
-    {
-      // Call again next interval.
-      ros_spin_timer_.expires_from_now(ros_spin_interval_);
-      ros_spin_timer_.async_wait(boost::bind(&Session::ros_spin_timeout, this,
-                                             boost::asio::placeholders::error));
-    }
-  }
-
-  //// RECEIVING MESSAGES ////
-  // TODO: Total message timeout, implement primarily in ReadBuffer.
-
-  void read_sync_header() {
-    async_read_buffer_.read(1, boost::bind(&Session::read_sync_first, this, _1));
   }
 
   void read_sync_first(ros::serialization::IStream& stream) {
@@ -312,6 +282,16 @@ private:
     stream << msg_checksum;
 
     ROS_DEBUG_NAMED("async_write", "Sending buffer of %d bytes to client.", length);
+
+    // Will call immediately if we are already on the io_service thread. Otherwise,
+    // the request is queued up and executed on that thread.
+    socket_.get_io_service().dispatch(boost::bind(&Session::write_buffer, this, buffer_ptr));
+  }
+
+  // Function which is dispatched onto the io_service thread by write_message, so that
+  // write_message may be safely called directly from the ROS background spinning thread.
+  // https://faithandbrave.hateblo.jp/entry/20110913/1315895805
+  void write_buffer(BufferPtr buffer_ptr) {
     boost::asio::async_write(socket_, boost::asio::buffer(*buffer_ptr),
           boost::bind(&Session::write_completion_cb, this, boost::asio::placeholders::error, buffer_ptr));
   }
@@ -433,6 +413,8 @@ private:
     publishers_[topic_info.topic_id] = pub;
 
     set_sync_timeout(timeout_interval_);
+
+    ROS_INFO("publisher name: %s, type: %s, id: %d", topic_info.topic_name.c_str(), topic_info.message_type.c_str(), topic_info.topic_id);
   }
 
   void setup_subscriber(ros::serialization::IStream& stream) {
@@ -444,6 +426,8 @@ private:
     subscribers_[topic_info.topic_id] = sub;
 
     set_sync_timeout(timeout_interval_);
+
+    ROS_INFO("subscirber name: %s, type: %s, id: %d", topic_info.topic_name.c_str(), topic_info.message_type.c_str(), topic_info.topic_id);
   }
 
   void setup_service_server_publisher(ros::serialization::IStream& stream) {
@@ -579,7 +563,7 @@ private:
   bool active_;
 
   ros::NodeHandle nh_;
-  ros::CallbackQueue ros_callback_queue_;
+  ros::AsyncSpinner spinner_; // Use 2 threads
 
   boost::posix_time::time_duration timeout_interval_;
   boost::posix_time::time_duration attempt_interval_;
@@ -587,7 +571,6 @@ private:
   boost::posix_time::time_duration ros_spin_interval_;
   boost::asio::deadline_timer sync_timer_;
   boost::asio::deadline_timer require_check_timer_;
-  boost::asio::deadline_timer ros_spin_timer_;
   std::string require_param_name_;
 
   std::map<uint16_t, boost::function<void(ros::serialization::IStream&)> > callbacks_;
