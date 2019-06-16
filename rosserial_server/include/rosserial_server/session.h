@@ -82,6 +82,11 @@ public:
     require_check_interval_ = boost::posix_time::milliseconds(1000);
     require_param_name_ = "~require";
 
+    ros::param::param("~spinal_uart_mode", spinal_uart_mode_, false);
+    ros::param::param("~chunk_size", chunk_size_, 16);
+    ros::param::param("~chunk_interval", chunk_interval_, 0.001); // ms
+    ROS_WARN("spinal_uart_mode: %d", spinal_uart_mode_);
+
     signal(SIGINT, &Session::signal_catch);
   }
 
@@ -267,15 +272,27 @@ private:
   void write_message(Buffer& message, const uint16_t topic_id) {
     uint8_t overhead_bytes = 8;
     uint16_t length = overhead_bytes + message.size();
+
     BufferPtr buffer_ptr(new Buffer(length));
+    ros::serialization::OStream stream(&buffer_ptr->at(0), buffer_ptr->size());
+
+    if(spinal_uart_mode_)
+      {
+        uint16_t extended_length = length;
+        uint8_t reminder = length % chunk_size_;
+        if(reminder != 0) extended_length = (length / chunk_size_ + 1) * chunk_size_;
+
+        buffer_ptr = BufferPtr(new Buffer(extended_length));
+        stream = ros::serialization::OStream(&buffer_ptr->at(0), length);
+      }
 
     uint8_t msg_checksum;
     ros::serialization::IStream checksum_stream(message.size() > 0 ? &message[0] : NULL, message.size());
 
-    ros::serialization::OStream stream(&buffer_ptr->at(0), buffer_ptr->size());
+
     uint8_t msg_len_checksum = 255 - checksum(message.size());
     stream << (uint16_t)0xfeff << (uint16_t)message.size() << msg_len_checksum << topic_id;
-    std::cout << "message size: " << message.size() << ", msg_len_checksum:" << topic_id << std::endl;
+    //std::cout << "message size: " << message.size() << ", msg_len_checksum:" << topic_id << std::endl;
     msg_checksum = 255 - (checksum(checksum_stream) + checksum(topic_id));
 
     memcpy(stream.advance(message.size()), &message[0], message.size());
@@ -292,8 +309,47 @@ private:
   // write_message may be safely called directly from the ROS background spinning thread.
   // https://faithandbrave.hateblo.jp/entry/20110913/1315895805
   void write_buffer(BufferPtr buffer_ptr) {
-    boost::asio::async_write(socket_, boost::asio::buffer(*buffer_ptr),
-          boost::bind(&Session::write_completion_cb, this, boost::asio::placeholders::error, buffer_ptr));
+    if(spinal_uart_mode_)
+      {
+        int packing_size;
+        if(buffer_ptr->size() % chunk_size_ > 0) packing_size = buffer_ptr->size() / chunk_size_ + 1;
+        else packing_size = buffer_ptr->size() / chunk_size_;
+
+        for(int i = 0; i < packing_size; i++)
+          {
+            BufferPtr seg_buffer_ptr;
+            if(buffer_ptr->size() % chunk_size_ > 0)
+              {
+                if(i == packing_size -1) seg_buffer_ptr = BufferPtr(new Buffer(buffer_ptr->size() % chunk_size_));
+                else seg_buffer_ptr = BufferPtr(new Buffer(chunk_size_));
+              }
+            else
+              {
+                seg_buffer_ptr = BufferPtr(new Buffer(chunk_size_));
+              }
+
+            for(int j = 0; j < seg_buffer_ptr->size(); j ++)
+              {
+                seg_buffer_ptr->at(j) = buffer_ptr->at(i * chunk_size_ + j);
+              }
+
+            boost::asio::async_write(socket_, boost::asio::buffer(*seg_buffer_ptr),
+                                     boost::bind(&Session::write_completion_cb,
+                                                 this, boost::asio::placeholders::error, seg_buffer_ptr));
+
+            /* delay method */
+            // use ros::Duration(chunk_interval_).sleep();
+            double last_time = ros::Time::now().toSec();
+            while(1)
+              {
+                if(ros::Time::now().toSec() - last_time > chunk_interval_) break;
+              }
+          }
+      }
+    else
+      boost::asio::async_write(socket_, boost::asio::buffer(*buffer_ptr),
+                               boost::bind(&Session::write_completion_cb,
+                                           this, boost::asio::placeholders::error, buffer_ptr));
   }
 
   void write_completion_cb(const boost::system::error_code& error,
@@ -564,6 +620,10 @@ private:
 
   ros::NodeHandle nh_;
   ros::AsyncSpinner spinner_; // Use 2 threads
+
+  bool spinal_uart_mode_;
+  int chunk_size_;
+  double chunk_interval_;
 
   boost::posix_time::time_duration timeout_interval_;
   boost::posix_time::time_duration attempt_interval_;
