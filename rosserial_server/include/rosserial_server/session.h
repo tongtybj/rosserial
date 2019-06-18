@@ -292,7 +292,7 @@ private:
 
     uint8_t msg_len_checksum = 255 - checksum(message.size());
     stream << (uint16_t)0xfeff << (uint16_t)message.size() << msg_len_checksum << topic_id;
-    //std::cout << "message size: " << message.size() << ", msg_len_checksum:" << topic_id << std::endl;
+    //std::cout << "message id: " << topic_id  << ", message size: " << message.size() << ", msg_len_checksum:" << topic_id << std::endl;
     msg_checksum = 255 - (checksum(checksum_stream) + checksum(topic_id));
 
     memcpy(stream.advance(message.size()), &message[0], message.size());
