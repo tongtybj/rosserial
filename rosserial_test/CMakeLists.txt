@@ -3,12 +3,14 @@ project(rosserial_test)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rosserial_arduino
   rosserial_client
   rosserial_msgs
   rosserial_python
   rosserial_server
   rostest
   std_msgs
+  std_srvs
 )
 
 catkin_package(
@@ -40,6 +42,8 @@ if(CATKIN_ENABLE_TESTING)
   endfunction()
 
   add_rosserial_test_executable(publish_subscribe)
+  add_rosserial_test_executable(service_client)
+  add_rosserial_test_executable(service_client2)
 
   add_rostest(test/rosserial_server_socket.test)
   add_rostest(test/rosserial_server_serial.test)
