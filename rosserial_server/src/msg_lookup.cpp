@@ -29,6 +29,7 @@
 
 #include "rosserial_server/msg_lookup.h"
 #include "Python.h"
+#include <iostream>
 
 namespace rosserial_server
 {
@@ -47,11 +48,26 @@ const MsgInfo lookupMessage(const std::string& message_type, const std::string s
   // For now we initialize and finalize for each message. It's quick to do and avoids
   // an initialized Python interpreter hanging around for the duration of the execution.
   Py_Initialize();
+
+  /*
+  std::string pkg_name("rosserial_arduino");
+  PyObject* pkg = PyImport_ImportModule(pkg_name.c_str());
+  if (!pkg)
+  {
+    throw std::runtime_error("Unable to import message pkg " + pkg_name + ".");
+  }
+  std::cout << "OK!!!! " << pkg_name  << std::endl;
+  Py_XDECREF(pkg);
+  */
+
   PyObject* module = PyImport_ImportModule((module_name + "." + submodule).c_str());
+
   if (!module)
   {
-    throw std::runtime_error("Unable to import message module " + module_name + ".");
+    throw std::runtime_error("Unable to import message module " + module_name + "/" + submodule +".");
   }
+  std::cout << "module" << std::endl;
+
   PyObject* msg_class = PyObject_GetAttrString(module, class_name.c_str());
   if (!msg_class)
   {
@@ -81,6 +97,11 @@ const MsgInfo lookupMessage(const std::string& message_type, const std::string s
   Py_XDECREF(full_text);
   Py_XDECREF(md5sum);
   Py_Finalize();
+
+
+  std::cout << "msg submodule: " << submodule << std::endl;
+  std::cout << "msg type: " << message_type << std::endl;
+  std::cout << "msg full text: " << msginfo.full_text << std::endl;
 
   return msginfo;
 }

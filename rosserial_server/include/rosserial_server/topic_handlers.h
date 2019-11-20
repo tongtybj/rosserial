@@ -132,13 +132,17 @@ public:
     rosserial_server::MsgInfo respinfo;
     try
     {
+      ROS_ERROR_STREAM(topic_info.message_type);
       srvinfo = lookupMessage(topic_info.message_type, "srv");
+      ROS_ERROR_STREAM("service md5: " << srvinfo.md5sum);
       reqinfo = lookupMessage(topic_info.message_type + "Request", "srv");
+      ROS_ERROR_STREAM("req md5: " << reqinfo.md5sum);
       respinfo = lookupMessage(topic_info.message_type + "Response", "srv");
+      ROS_ERROR_STREAM("res md5: " << respinfo.md5sum);
     }
     catch (const std::exception& e)
     {
-      ROS_WARN_STREAM("Unable to look up service definition: " << e.what());
+      ROS_ERROR_STREAM("Unable to look up service definition: " << e.what());
     }
     service_md5_ = srvinfo.md5sum;
     request_message_md5_ = reqinfo.md5sum;
@@ -170,6 +174,7 @@ public:
     // perform service call
     // note that at present, at least for rosserial-windows a service call returns nothing,
     // so we discard the return value of this call() invocation.
+
     service_client_.call(request_message_, response_message_, service_md5_);
 
     // write service response over the wire
