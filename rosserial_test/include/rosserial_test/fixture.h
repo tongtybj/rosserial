@@ -74,7 +74,7 @@ public:
 
 class SingleClientFixture : public ::testing::Test {
 protected:
-  SingleClientFixture(): as(1) {}
+  SingleClientFixture(): as(2) {}
   static void SetModeFromParam() {
     std::string mode;
     ros::param::get("~mode", mode);

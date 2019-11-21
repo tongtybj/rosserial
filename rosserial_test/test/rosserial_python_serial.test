@@ -12,8 +12,15 @@
     <param name="port" value="$(arg port)" />
   </test>
 
+
   <test test-name="rosserial_server_serial_test_service_client" pkg="rosserial_test"
         type="rosserial_test_service_client" time-limit="10.0">
+    <param name="mode" value="$(arg mode)" />
+    <param name="port" value="$(arg port)" />
+  </test>
+
+  <test test-name="rosserial_python_serial_test_service_server" pkg="rosserial_test"
+        type="rosserial_test_service_server" time-limit="10.0">
     <param name="mode" value="$(arg mode)" />
     <param name="port" value="$(arg port)" />
   </test>
