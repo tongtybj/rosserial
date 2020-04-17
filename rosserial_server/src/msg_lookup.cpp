@@ -35,6 +35,11 @@ namespace rosserial_server
 
 const MsgInfo lookupMessage(const std::string& message_type, const std::string submodule)
 {
+  // Lazy-initialize the embedded Python interpreter. Avoid calling the corresponding
+  // finalize method due to issues with importing cyaml in the second instance. The
+  // total memory cost of having this in-process is only about 5-6MB.
+  Py_Initialize();
+
   MsgInfo msginfo;
   size_t slash_pos = message_type.find('/');
   if (slash_pos == std::string::npos)
@@ -44,9 +49,6 @@ const MsgInfo lookupMessage(const std::string& message_type, const std::string s
   std::string module_name = message_type.substr(0, slash_pos);
   std::string class_name = message_type.substr(slash_pos + 1, std::string::npos);
 
-  // For now we initialize and finalize for each message. It's quick to do and avoids
-  // an initialized Python interpreter hanging around for the duration of the execution.
-  Py_Initialize();
   PyObject* module = PyImport_ImportModule((module_name + "." + submodule).c_str());
   if (!module)
   {
@@ -80,7 +82,6 @@ const MsgInfo lookupMessage(const std::string& message_type, const std::string s
 #endif
   Py_XDECREF(full_text);
   Py_XDECREF(md5sum);
-  Py_Finalize();
 
   return msginfo;
 }
