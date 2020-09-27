@@ -455,8 +455,7 @@ private:
 
     if (!service_servers_.count(topic_info.topic_name)) {
       ROS_INFO("Creating service server for topic %s",topic_info.topic_name.c_str());
-      ServiceServerPtr srv(new ServiceServer(
-                                             nh_,topic_info,boost::bind(&Session::write_message, this, _1, _2)));
+      ServiceServerPtr srv(new ServiceServer(nh_, topic_info, buffer_max, boost::bind(&Session::write_message, this, _1, _2)));
       service_servers_[topic_info.topic_name] = srv;
       callbacks_[topic_info.topic_id] = boost::bind(&ServiceServer::response_handle, srv, _1);
     }
@@ -475,8 +474,7 @@ private:
 
     if (!service_servers_.count(topic_info.topic_name)) {
       ROS_INFO("Creating service server for topic %s",topic_info.topic_name.c_str());
-      ServiceServerPtr srv(new ServiceServer(
-                                             nh_,topic_info,boost::bind(&Session::write_message, this, _1, _2)));
+      ServiceServerPtr srv(new ServiceServer(nh_, topic_info, buffer_max, boost::bind(&Session::write_message, this, _1, _2)));
       service_servers_[topic_info.topic_name] = srv;
       callbacks_[topic_info.topic_id] = boost::bind(&ServiceServer::response_handle, srv, _1);
     }
